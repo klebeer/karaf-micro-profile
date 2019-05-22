@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>osgi-shade</artifactId>
+        <groupId>org.ecjug.microprofile</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>smallrye-metrics-osgi</artifactId>
+
+    <name>Karaf ::: MicroProfile smallrye-metrics OSGI Shade</name>
+    <packaging>bundle</packaging>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>io.smallrye</groupId>
+            <artifactId>smallrye-metrics</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.microprofile.metrics</groupId>
+            <artifactId>microprofile-metrics-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>io.smallrye:smallrye-metrics</include>
+                                </includes>
+                            </artifactSet>
+                            <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>${maven-bundle-plugin.version}</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>SmallRye: MicroProfile Metrics Implementation</Bundle-Name>
+                        <Bundle-SymbolicName>io.smallrye.metrics</Bundle-SymbolicName>
+                        <Import-Package>
+                            javax.annotation,
+                            javax.enterprise.context,
+                            javax.enterprise.context.spi,
+                            javax.enterprise.event,
+                            javax.enterprise.inject,
+                            javax.enterprise.inject.spi,
+                            javax.enterprise.util,
+                            javax.inject,
+                            javax.interceptor,
+                            javax.json,
+                            javax.management,
+                            javax.management.openmbean,
+                            org.eclipse.microprofile.config,
+                            org.eclipse.microprofile.metrics,
+                            org.eclipse.microprofile.metrics.annotation,
+                            org.jboss.logging;resolution:=optional
+                        </Import-Package>
+                        <Export-Package>
+                            io.smallrye.metrics,
+                            io.smallrye.metrics.app,
+                            io.smallrye.metrics.exporters,
+                            io.smallrye.metrics.interceptors,
+                            io.smallrye.metrics.mbean,
+                            io.smallrye.metrics.setup
+                        </Export-Package>
+                        <Private-Package>
+                            io.smallrye.metrics.setup
+                        </Private-Package>
+                        <Require-Capability>
+                            osgi.extender; filter:="(osgi.extender=pax.cdi)",
+                            org.ops4j.pax.cdi.extension; filter:="(extension=pax-cdi-extension)"
+                        </Require-Capability>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

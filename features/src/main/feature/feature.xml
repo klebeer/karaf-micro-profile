@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<features xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="karaf-rest-example-${project.version}"
+          xmlns="http://karaf.apache.org/xmlns/features/v1.4.0"
+          xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.4.0">
+
+
+    <feature name="microprofile-config-api" version="${project.version}">
+        <feature>pax-cdi</feature>
+        <bundle>mvn:org.eclipse.microprofile.config/microprofile-config-api/${microprofile-config-api.version}</bundle>
+    </feature>
+
+    <feature name="microprofile-metrics-api" version="${project.version}">
+        <feature>microprofile-config-api</feature>
+        <bundle>mvn:org.eclipse.microprofile.metrics/microprofile-metrics-api/${microprofile-metrics-api.version}</bundle>
+    </feature>
+
+    <feature name="microprofile-config" version="${project.version}" start-level="81">
+        <feature>microprofile-config-api</feature>
+        <bundle>mvn:org.jboss.logging/jboss-logging/${jboss-logging.version}</bundle>
+        <bundle>mvn:org.ecjug.microprofile/smallrye-config-osgi/${project.version}</bundle>
+    </feature>
+
+    <feature name="microprofile-metrics" version="${project.version}">
+        <feature>microprofile-config</feature>
+        <feature>microprofile-metrics-api</feature>
+        <bundle> mvn:org.glassfish/javax.json/${javax.json.version}</bundle>
+        <bundle>wrap:mvn:org.ecjug.microprofile/smallrye-metrics-osgi/${project.version}</bundle>
+    </feature>
+
+</features>
